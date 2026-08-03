@@ -2,7 +2,7 @@
 
 A personal time toolkit that lives entirely in your browser — a local clock, a world clock, alarms, a stopwatch, and a timer, all in one page, styled after a brass-and-navy instrument panel.
 
-There's no sign-up, no server, and no app store. Time-Meridian is a single HTML file: open it in a browser and it works. Your accent color, background, sounds, and alarms are remembered on your own device via the browser's local storage — nothing is ever sent anywhere.
+There's no sign-up, no server, and no app store.Your accent color, background, sounds, and alarms are remembered on your own device via the browser's local storage — nothing is ever sent anywhere.
 
 ## Features
 
@@ -15,18 +15,6 @@ There's no sign-up, no server, and no app store. Time-Meridian is a single HTML 
 - **Custom sounds** — upload your own sound files for alarms, the stopwatch, and the timer.
 - **Installable** — add it to your phone or computer's home screen/dock as its own app (PWA).
 
-## Getting Started
-
-Time-Meridian doesn't need a build step, a server, or any dependencies. Just open `index.html` in a browser:
-
-```bash
-git clone https://github.com/<your-username>/<your-repo>.git
-cd <your-repo>
-open index.html   # or just double-click the file
-```
-
-To host it on the web (for example with GitHub Pages), commit `index.html` and enable Pages on the repository — no build process required.
-
 ## Installing as an App
 
 Once the page is live on the web, it can be installed like a native app:
@@ -38,7 +26,3 @@ Once the page is live on the web, it can be installed like a native app:
 ## Privacy
 
 Time-Meridian is a self-contained, offline-first web page. It doesn't connect to any server, collect any data, or require an account. Settings and alarms are stored only in your browser's local storage on your own device.
-
-## Tech
-
-A single `index.html` file containing all HTML, CSS, and JavaScript — no frameworks, no build tools, no external requests at runtime.
