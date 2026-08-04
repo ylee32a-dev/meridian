@@ -334,8 +334,31 @@
     background:var(--panel); backdrop-filter:blur(16px);
     padding:4px 12px; border-radius:8px;
   }
+  /* The long-form pages (Get the App, About, Policy, Time Sisters) are plain
+     paragraphs/headings/lists with no card of their own — over a photo that's
+     unreadable line by line, so wrap the whole body in one reading card
+     instead of chip-ing every element individually. */
+  .photo-active .more-page-body{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    backdrop-filter:var(--panel-blur); padding:24px 28px;
+  }
+  /* The tab bar above it (About / Policy / Time Sisters) is plain text too —
+     give it a matching card that sits flush on top, so it reads as one
+     continuous panel rather than a second unreadable strip above the first. */
+  .photo-active .more-tabs{
+    background:var(--panel); border:1px solid var(--line); border-bottom:none;
+    backdrop-filter:var(--panel-blur); border-radius:14px 14px 0 0;
+    padding:0 20px; margin-bottom:0;
+  }
+  .photo-active .more-tabs + .more-page-body{
+    border-radius:0 0 14px 14px; border-top:none;
+  }
   .photo-active .section-head h1{ padding:6px 14px; }
   .photo-active .section-head > div{ display:flex; flex-direction:column; align-items:flex-start; gap:8px; }
+  .photo-active .fab-add-card{
+    background:var(--panel); border:1.5px dashed var(--line-strong);
+    backdrop-filter:var(--panel-blur);
+  }
 
   /* Clock hands and dial readouts (analog clock, stopwatch, timer) can get lost
      against a busy photo background — give the hands a soft shadow always, and
@@ -688,7 +711,8 @@
     nav.tabs button::before{ left:8px; right:8px; top:auto; bottom:2px; width:auto; height:2px; transform:scaleX(0); }
     nav.tabs button.active::before{ transform:scaleX(1); }
     .sidebar-actions{ margin-top:0; flex:0 0 auto; }
-    .sidebar-plus-btn{ width:auto; padding:8px 12px; }
+    .sidebar-plus-btn{ width:auto; padding:8px 10px; justify-content:center; }
+    .sidebar-plus-btn .nav-label{ display:none; }
     .sidebar-install-btn.active, .sidebar-more-btn.active{ background:var(--panel-2); color:var(--brass-light); }
     main{ padding:32px 16px 60px 16px; }
     .city-grid{ grid-template-columns:1fr 1fr; }
@@ -1020,7 +1044,7 @@
     <div class="more-tabs">
       <button class="more-tab-btn active" data-more-tab="about">About</button>
       <button class="more-tab-btn" data-more-tab="policy">Policy</button>
-      <button class="more-tab-btn" data-more-tab="sisters">Three Sisters</button>
+      <button class="more-tab-btn" data-more-tab="sisters">Time Sisters</button>
     </div>
     <div class="more-page-body">
 
@@ -1062,7 +1086,7 @@
 
 
       <div class="more-tab-content" id="moreTabSisters">
-        <p>Tucked into Time-Meridian's About page is a small piece of original story: <strong>Three Sisters, Three Times</strong> — different times, one bond, always.</p>
+        <p>Time-Meridian holds a small piece of original story: <strong>Time Sisters</strong> — different times, one bond, always.</p>
 
         <h3>Eleanor <span style="opacity:.6; font-weight:400;">— Past, the eldest</span></h3>
         <p>Warm, steady, and a little wistful, Eleanor is the keeper of memory. Her flower is the Everbloom Lily, which never fades — memory, protection, legacy, love.</p>
