@@ -127,6 +127,7 @@
   .settings-panel .modal-body{ display:flex; flex-direction:column; gap:22px; }
   .more-tabs{
     display:flex; gap:0; margin-bottom:28px; border-bottom:1px solid var(--line);
+    max-width:640px;
   }
   .more-tab-btn{
     background:none; border:none; color:var(--slate); font-family:var(--font-body);
@@ -169,7 +170,7 @@
     .more-page-body p{ font-size:14px; line-height:1.65; margin-bottom:14px; }
     .more-page-body h3{ font-size:15.5px; margin:20px 0 8px 0; }
     .more-page-body ol{ font-size:14px; line-height:1.65; padding-left:20px; }
-    .more-tabs{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    .more-tabs{ overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; }
     .more-tab-btn{ font-size:13px; margin-right:18px; white-space:nowrap; }
   }
   .settings-section-title{
@@ -712,7 +713,7 @@
     nav.tabs button.active::before{ transform:scaleX(1); }
     .sidebar-actions{ margin-top:0; flex:0 0 auto; }
     .sidebar-plus-btn{ width:auto; padding:8px 10px; justify-content:center; }
-    .sidebar-plus-btn .nav-label{ display:none; }
+    .sidebar-plus-btn .nav-label{ display:none !important; }
     .sidebar-install-btn.active, .sidebar-more-btn.active{ background:var(--panel-2); color:var(--brass-light); }
     main{ padding:32px 16px 60px 16px; }
     .city-grid{ grid-template-columns:1fr 1fr; }
