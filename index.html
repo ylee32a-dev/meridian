@@ -107,11 +107,12 @@
     position:fixed; width:210px;
     display:flex; flex-direction:column;
     border:1px solid var(--line-strong); border-radius:10px; overflow:hidden;
-    background:var(--panel); box-shadow:0 12px 28px rgba(0,0,0,0.4);
-    opacity:0; transform:translateY(6px); pointer-events:none;
+    background:var(--panel); box-shadow:0 10px 20px rgba(0,0,0,0.35);
+    opacity:0; transform:translate3d(0,6px,0); pointer-events:none;
     transition:opacity .15s ease, transform .15s ease; z-index:200;
+    will-change:opacity, transform; contain:layout style; backface-visibility:hidden;
   }
-  .sidebar-bottom-group.open{ opacity:1; transform:translateY(0); pointer-events:auto; }
+  .sidebar-bottom-group.open{ opacity:1; transform:translate3d(0,0,0); pointer-events:auto; }
   .sidebar-bottom-group .nav-label{ display:inline; }
   .sidebar-install-btn, .sidebar-more-btn, .sidebar-settings-btn{
     display:flex; align-items:center; justify-content:flex-start; gap:10px;
@@ -253,7 +254,7 @@
   .sidebar-inner{
     position:absolute; top:0; left:0; width:76px; height:100vh;
     background:var(--header-bg);
-    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px); backdrop-filter:blur(22px);
     border-right:1px solid var(--sidebar-line);
     padding:28px 16px;
     display:flex; flex-direction:column; gap:36px;
@@ -332,7 +333,7 @@
   .photo-active .section-head h1,
   .photo-active .section-head p{
     display:inline-block; width:fit-content;
-    background:var(--panel); backdrop-filter:blur(16px);
+    background:var(--panel); -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px);
     padding:4px 12px; border-radius:8px;
   }
   /* The long-form pages (Get the App, About, Policy, Time Sisters) are plain
@@ -341,14 +342,14 @@
      instead of chip-ing every element individually. */
   .photo-active .more-page-body{
     background:var(--panel); border:1px solid var(--line); border-radius:14px;
-    backdrop-filter:var(--panel-blur); padding:24px 28px;
+    -webkit-backdrop-filter:var(--panel-blur); backdrop-filter:var(--panel-blur); padding:24px 28px;
   }
   /* The tab bar above it (About / Policy / Time Sisters) is plain text too —
      give it a matching card that sits flush on top, so it reads as one
      continuous panel rather than a second unreadable strip above the first. */
   .photo-active .more-tabs{
     background:var(--panel); border:1px solid var(--line); border-bottom:none;
-    backdrop-filter:var(--panel-blur); border-radius:14px 14px 0 0;
+    -webkit-backdrop-filter:var(--panel-blur); backdrop-filter:var(--panel-blur); border-radius:14px 14px 0 0;
     padding:0 20px; margin-bottom:0;
   }
   .photo-active .more-tabs + .more-page-body{
@@ -358,7 +359,7 @@
   .photo-active .section-head > div{ display:flex; flex-direction:column; align-items:flex-start; gap:8px; }
   .photo-active .fab-add-card{
     background:var(--panel); border:1.5px dashed var(--line-strong);
-    backdrop-filter:var(--panel-blur);
+    -webkit-backdrop-filter:var(--panel-blur); backdrop-filter:var(--panel-blur);
   }
 
   /* Clock hands and dial readouts (analog clock, stopwatch, timer) can get lost
@@ -377,22 +378,22 @@
   }
   .photo-active .dial-readout{
     background:var(--panel); border:1px solid var(--line); border-radius:14px;
-    backdrop-filter:var(--panel-blur); padding:16px 28px;
+    -webkit-backdrop-filter:var(--panel-blur); backdrop-filter:var(--panel-blur); padding:16px 28px;
   }
   .photo-active .timer-preview-col{
-    background:var(--panel); backdrop-filter:blur(16px);
+    background:var(--panel); -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px);
     border-radius:10px; padding:8px 16px;
   }
   .photo-active .stepper .step-val{ background:var(--panel); }
   .photo-active .stepper .step-tag{
-    background:var(--panel); backdrop-filter:blur(16px);
+    background:var(--panel); -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px);
     border-radius:6px; padding:2px 8px; margin-top:4px;
   }
   .photo-active .colon-sep{
-    background:var(--panel); backdrop-filter:blur(16px);
+    background:var(--panel); -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px);
     border-radius:6px; padding:0 6px;
   }
-  .photo-active .btn-outline{ background:var(--panel); backdrop-filter:blur(16px); }
+  .photo-active .btn-outline{ background:var(--panel); -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px); }
   .photo-active .btn:disabled{ opacity:0.6; }
   .size-slider{
     -webkit-appearance:none; appearance:none; width:140px; height:4px; border-radius:2px;
@@ -434,7 +435,7 @@
   .city-card{
     background:var(--panel); border:1px solid var(--line); border-radius:14px;
     padding:22px; position:relative; transition:border-color .15s, background-color .2s;
-    backdrop-filter:var(--panel-blur);
+    -webkit-backdrop-filter:var(--panel-blur); backdrop-filter:var(--panel-blur);
   }
   .city-card:hover{ border-color:var(--line-strong); }
   .city-card:hover .card-remove{ opacity:1; }
@@ -469,7 +470,7 @@
   .fab-add-card:hover{ border-color:var(--brass); color:var(--brass-light); }
   .fab-add-card .plus{ font-size:26px; font-family:var(--font-display); color:var(--brass); }
 
-  .alarm-panel{ background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; backdrop-filter:var(--panel-blur); zoom:var(--alarm-scale); }
+  .alarm-panel{ background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; -webkit-backdrop-filter:var(--panel-blur); backdrop-filter:var(--panel-blur); zoom:var(--alarm-scale); }
   .alarm-row{
     display:flex; align-items:center; gap:18px; padding:20px 24px;
     border-bottom:1px solid var(--line);
@@ -524,7 +525,7 @@
   .dial-readout .sub-label{ font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--slate); margin-top:6px; }
   .local-clock-panel{
     background:var(--panel); border:1px solid var(--line); border-radius:14px;
-    padding:22px 36px; text-align:center; backdrop-filter:var(--panel-blur);
+    padding:22px 36px; text-align:center; -webkit-backdrop-filter:var(--panel-blur); backdrop-filter:var(--panel-blur);
     transition:background-color .2s;
   }
   .local-clock-digital{
@@ -552,7 +553,7 @@
   .exam-timer-card{
     align-self:stretch; width:100%; max-width:430px; margin-top:44px;
     background:var(--panel); border:1px solid var(--line); border-radius:14px;
-    padding:16px 20px; backdrop-filter:var(--panel-blur);
+    padding:16px 20px; -webkit-backdrop-filter:var(--panel-blur); backdrop-filter:var(--panel-blur);
   }
   .exam-timer-card-head{ display:flex; align-items:center; gap:12px; }
   .exam-timer-icon{
@@ -618,13 +619,13 @@
   .stepper{ display:flex; flex-direction:column; align-items:center; gap:2px; }
   .stepper button{
     width:44px; height:26px; background:var(--panel-2); border:1px solid var(--line); color:var(--brass);
-    cursor:pointer; font-size:11px; border-radius:6px; backdrop-filter:var(--panel-blur);
+    cursor:pointer; font-size:11px; border-radius:6px; -webkit-backdrop-filter:var(--panel-blur); backdrop-filter:var(--panel-blur);
   }
   .stepper button:hover{ background:rgba(201,151,78,0.16); border-color:var(--brass); color:var(--brass-light); }
   .stepper .step-val{
     font-family:var(--font-mono); font-size:42px; font-weight:500; width:80px; text-align:center;
     background:var(--panel); border:1px solid var(--line-strong); border-radius:8px; padding:8px 0;
-    backdrop-filter:var(--panel-blur); color:var(--ivory); outline:none;
+    -webkit-backdrop-filter:var(--panel-blur); backdrop-filter:var(--panel-blur); color:var(--ivory); outline:none;
   }
   .stepper .step-val:focus{ border-color:var(--brass); }
   .stepper .step-val::selection{ background:var(--brass); color:#1a1508; }
@@ -632,7 +633,7 @@
   .colon-sep{ font-family:var(--font-mono); font-size:32px; color:var(--slate-dim); align-self:center; margin:0 2px 26px 2px; }
 
   .overlay{
-    position:fixed; inset:0; background:rgba(8,9,13,0.7); backdrop-filter:blur(4px);
+    position:fixed; inset:0; background:rgba(8,9,13,0.7); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);
     z-index:100; display:flex; align-items:center; justify-content:center; padding:20px;
   }
   .modal-card{
@@ -701,6 +702,10 @@
       flex-direction:row; align-items:center; justify-content:space-between;
       padding:14px 16px; gap:12px; border-right:none; border-bottom:1px solid var(--sidebar-line);
       overflow-x:auto;
+      /* Lighter blur on mobile: a full-width 22px backdrop-filter is the
+         main GPU compositing cost whenever another fixed layer (like the
+         menu dropdown) opens on top of it, which is what caused the jank. */
+      -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
     }
     .sidebar:hover .sidebar-inner{ width:100%; box-shadow:none; }
     .sidebar-top-row{ align-items:center; }
@@ -778,9 +783,9 @@
     </button>
   </nav>
   <div class="sidebar-actions" id="sidebarActions">
-    <button class="sidebar-plus-btn" id="actionsToggleBtn" title="More">
+    <button class="sidebar-plus-btn" id="actionsToggleBtn" title="Menu">
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <span class="nav-label">More</span>
+      <span class="nav-label">Menu</span>
     </button>
   </div>
  </div>
@@ -1115,9 +1120,9 @@
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.5v11M12 14.5l-4-4M12 14.5l4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 15v3a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       <span class="nav-label">Get the App</span>
     </button>
-  <button class="sidebar-more-btn" id="moreBtn" title="About">
+  <button class="sidebar-more-btn" id="moreBtn" title="More">
       <svg viewBox="0 0 24 24" fill="none"><circle cx="6" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="18" cy="12" r="1.6" fill="currentColor"/></svg>
-      <span class="nav-label">About</span>
+      <span class="nav-label">More</span>
     </button>
   <button class="sidebar-settings-btn" id="settingsBtn" title="Appearance Setting">
       <svg viewBox="0 0 24 24" fill="none">
@@ -1472,8 +1477,39 @@ document.getElementById('moreBtn').addEventListener('click', ()=> switchToTab('m
   const toggleBtn = document.getElementById('actionsToggleBtn');
   const dropdown = document.getElementById('actionsDropdown');
   const DROPDOWN_WIDTH = 210;
+  let rafId = null;
+  let cachedRect = null;
 
+  // Reads layout (getBoundingClientRect) then writes styles in the next
+  // animation frame so the browser can batch layout + paint instead of
+  // doing a forced synchronous reflow on every call (this is what caused
+  // the stutter/jank when opening the menu on mobile).
   function positionDropdown(){
+    cachedRect = toggleBtn.getBoundingClientRect();
+    if(rafId) return;
+    rafId = requestAnimationFrame(()=>{
+      rafId = null;
+      const r = cachedRect;
+      const margin = 8;
+      const spaceBelow = window.innerHeight - r.bottom;
+      const spaceAbove = r.top;
+      if(spaceBelow >= 190 || spaceBelow > spaceAbove){
+        dropdown.style.top = (r.bottom + margin) + 'px';
+        dropdown.style.bottom = 'auto';
+      } else {
+        dropdown.style.bottom = (window.innerHeight - r.top + margin) + 'px';
+        dropdown.style.top = 'auto';
+      }
+      let left = r.left;
+      if(left + DROPDOWN_WIDTH > window.innerWidth - margin) left = window.innerWidth - DROPDOWN_WIDTH - margin;
+      if(left < margin) left = margin;
+      dropdown.style.left = left + 'px';
+    });
+  }
+  function openDropdown(){
+    // Position synchronously once before the transition starts so the
+    // panel never flashes in the wrong spot, then let scroll/resize use
+    // the throttled rAF path above.
     const r = toggleBtn.getBoundingClientRect();
     const margin = 8;
     const spaceBelow = window.innerHeight - r.bottom;
@@ -1489,9 +1525,6 @@ document.getElementById('moreBtn').addEventListener('click', ()=> switchToTab('m
     if(left + DROPDOWN_WIDTH > window.innerWidth - margin) left = window.innerWidth - DROPDOWN_WIDTH - margin;
     if(left < margin) left = margin;
     dropdown.style.left = left + 'px';
-  }
-  function openDropdown(){
-    positionDropdown();
     dropdown.classList.add('open');
     toggleBtn.classList.add('open');
   }
@@ -1513,8 +1546,8 @@ document.getElementById('moreBtn').addEventListener('click', ()=> switchToTab('m
   document.addEventListener('keydown', (e)=>{
     if(e.key === 'Escape') closeDropdown();
   });
-  window.addEventListener('resize', ()=>{ if(dropdown.classList.contains('open')) positionDropdown(); });
-  window.addEventListener('scroll', ()=>{ if(dropdown.classList.contains('open')) positionDropdown(); }, true);
+  window.addEventListener('resize', ()=>{ if(dropdown.classList.contains('open')) positionDropdown(); }, {passive:true});
+  window.addEventListener('scroll', ()=>{ if(dropdown.classList.contains('open')) positionDropdown(); }, {capture:true, passive:true});
 })();
 
 /* ---------- logo analog clock ---------- */
