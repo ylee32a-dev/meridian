@@ -1281,6 +1281,18 @@
       </div>
 
       <div>
+        <div class="settings-section-title">Time Format</div>
+        <div class="sound-toggle-row">
+          <span>24-Hour Time</span>
+          <label class="switch">
+            <input type="checkbox" id="militaryTimeToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <span class="field-hint">Applies to the Clock, World Clock, and Alarm list.</span>
+      </div>
+
+      <div>
         <div class="settings-section-title">Display Size</div>
         <div class="settings-size-row">
           <span class="settings-size-label">Clock</span>
@@ -1458,12 +1470,19 @@ function playOnceSound(kind){
 
 /* ---------- tab switching ---------- */
 let currentTab='clock';
+let use24HourFormat=false;
 function switchToTab(name){
   currentTab = name;
   document.querySelectorAll('nav.tabs button').forEach(x=> x.classList.toggle('active', x.dataset.tab === name));
   document.getElementById('installBtn').classList.toggle('active', name === 'install');
   document.getElementById('moreBtn').classList.toggle('active', name === 'more');
   document.querySelectorAll('.section').forEach(s=> s.classList.toggle('active', s.id === 'tab-'+name));
+  // Refresh the newly-shown tab immediately instead of waiting up to 1s for
+  // the next main-loop tick, since that loop now skips tabs that aren't
+  // active to save work.
+  if(name==='clock') updateLocalClock();
+  if(name==='worldclock') renderCities();
+  if(name==='timer') updateTimerPreview();
 }
 document.querySelectorAll('nav.tabs button').forEach(b=>{
   b.addEventListener('click', ()=> switchToTab(b.dataset.tab));
@@ -1602,7 +1621,11 @@ function updateLocalClock(){
   localClockSecEl.setAttribute('transform', `rotate(${s*6} 150 150)`);
 
   // digital readout
-  localClockDigitalEl.innerHTML = `${pad2(h12)}:${pad2(m)}:${pad2(s)}<span class="ap">${ampm}</span>`;
+  if(use24HourFormat){
+    localClockDigitalEl.innerHTML = `${pad2(h24)}:${pad2(m)}:${pad2(s)}`;
+  } else {
+    localClockDigitalEl.innerHTML = `${pad2(h12)}:${pad2(m)}:${pad2(s)}<span class="ap">${ampm}</span>`;
+  }
 
   // date + timezone
   const dateStr = now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
@@ -2644,22 +2667,27 @@ function renderCities(){
   const grid = document.getElementById('cityGrid');
   const now = new Date();
   grid.innerHTML='';
+  // Use the cached offset lookup (was already defined but unused here) instead
+  // of building a brand-new Intl.DateTimeFormat per city on every comparison —
+  // this runs every second while on the World Clock tab, so the uncached
+  // version meant dozens of formatter allocations per tick.
   const ordered = cities
     .map((c, idx)=>({c, idx}))
-    .sort((a,b)=> getTzOffsetMinutes(a.c.tz, now) - getTzOffsetMinutes(b.c.tz, now));
+    .sort((a,b)=> getCachedOffset(a.c.tz) - getCachedOffset(b.c.tz));
+  const localOffset = getCachedOffset(Intl.DateTimeFormat().resolvedOptions().timeZone);
   ordered.forEach(({c, idx})=>{
     const fmt = new Intl.DateTimeFormat('en-US', {timeZone:c.tz, hour:'numeric', minute:'2-digit', hour12:true});
     const parts = fmt.formatToParts(now);
-    const hourP = parts.find(p=>p.type==='hour').value;
     const minP = parts.find(p=>p.type==='minute').value;
     const ampm = parts.find(p=>p.type==='dayPeriod')?.value || '';
     const hour24 = parseInt(new Intl.DateTimeFormat('en-GB',{timeZone:c.tz, hour:'numeric', hour12:false}).format(now));
+    const hourP = use24HourFormat ? pad2(hour24) : parts.find(p=>p.type==='hour').value;
     const cityDateStr = new Intl.DateTimeFormat('en-CA', {timeZone:c.tz, year:'numeric',month:'2-digit',day:'2-digit'}).format(now);
     const localDateStr = new Intl.DateTimeFormat('en-CA', {year:'numeric',month:'2-digit',day:'2-digit'}).format(now);
     let dayLabel='Today';
     if(cityDateStr>localDateStr) dayLabel='Tomorrow';
     else if(cityDateStr<localDateStr) dayLabel='Yesterday';
-    const offsetMin = getTzOffsetMinutes(c.tz, now) - getTzOffsetMinutes(Intl.DateTimeFormat().resolvedOptions().timeZone, now);
+    const offsetMin = getCachedOffset(c.tz) - localOffset;
     let diffText = 'Same as your time';
     if(offsetMin!==0){
       const h=Math.floor(Math.abs(offsetMin)/60), m=Math.abs(offsetMin)%60;
@@ -2676,7 +2704,7 @@ function renderCities(){
           <div class="city-diff">${diffText}</div>
         </div>
       </div>
-      <div class="city-digital">${hourP}:${minP}<span class="ampm">${ampm}</span></div>
+      <div class="city-digital">${hourP}:${minP}${use24HourFormat ? '' : `<span class="ampm">${ampm}</span>`}</div>
       <div class="city-date">${dayLabel}</div>
     `;
     card.querySelector('.card-remove').addEventListener('click', ()=>{ cities.splice(idx,1); renderCities(); saveSettings(); });
@@ -2768,10 +2796,12 @@ function renderAlarms(){
   sorted.forEach(a=>{
     const h12=((a.hour%12)===0)?12:(a.hour%12);
     const ampm=a.hour<12?'AM':'PM';
+    const displayHour = use24HourFormat ? pad2(a.hour) : pad2(h12);
+    const ampmMarkup = use24HourFormat ? '' : `<span class="ap">${ampm}</span>`;
     const row=document.createElement('div');
     row.className='alarm-row';
     row.innerHTML = `
-      <div class="alarm-time ${a.enabled?'':'off'}">${pad2(h12)}:${pad2(a.minute)}<span class="ap">${ampm}</span></div>
+      <div class="alarm-time ${a.enabled?'':'off'}">${displayHour}:${pad2(a.minute)}${ampmMarkup}</div>
       <div class="alarm-info">
         <div class="alarm-label ${a.enabled?'':'off'}">${a.label}</div>
         <div class="alarm-repeat">
@@ -2910,6 +2940,13 @@ document.getElementById('snoozeMinutesInput').addEventListener('input', ()=>{
   saveSettings();
 });
 document.getElementById('soundToggleAlarm').addEventListener('change', e=>{ soundSettings.alarm.enabled = e.target.checked; saveSettings(); });
+document.getElementById('militaryTimeToggle').addEventListener('change', e=>{
+  use24HourFormat = e.target.checked;
+  updateLocalClock();
+  renderCities();
+  renderAlarms();
+  saveSettings();
+});
 document.getElementById('soundToggleStopwatch').addEventListener('change', e=>{ soundSettings.stopwatch.enabled = e.target.checked; saveSettings(); });
 document.getElementById('soundToggleTimer').addEventListener('change', e=>{ soundSettings.timer.enabled = e.target.checked; saveSettings(); });
 
@@ -3224,13 +3261,32 @@ document.getElementById('timerDoneStopBtn').addEventListener('click', ()=>{
 
 /* ---------- MAIN LOOP ---------- */
 setInterval(()=>{
-  updateLogoClock();
-  updateLocalClock();
-  if(currentTab==='worldclock') renderCities();
-  if(currentTab==='timer') updateTimerPreview();
+  // Skip the purely visual redraws when the tab/app isn't visible (nothing
+  // on screen to update), and skip the local clock update when a different
+  // tab is active (it's just sitting under display:none). Alarm/timer
+  // schedule checks always keep running though, since those need to fire
+  // even while the app is backgrounded.
+  if(!document.hidden){
+    updateLogoClock();
+    if(currentTab==='clock') updateLocalClock();
+    if(currentTab==='worldclock') renderCities();
+    if(currentTab==='timer') updateTimerPreview();
+  }
   checkExamTimerSchedule();
   checkAlarms();
 }, 1000);
+
+// When the app comes back into view (screen turned back on, tab refocused),
+// refresh right away instead of waiting for the next tick — could be up to
+// a second stale, or much more if the tab was backgrounded a while.
+document.addEventListener('visibilitychange', ()=>{
+  if(!document.hidden){
+    updateLogoClock();
+    if(currentTab==='clock') updateLocalClock();
+    if(currentTab==='worldclock') renderCities();
+    if(currentTab==='timer') updateTimerPreview();
+  }
+});
 
 /* ---------- CUSTOMIZE APPEARANCE ---------- */
 const ACCENT_PRESETS = [
@@ -3260,6 +3316,7 @@ function saveSettingsNow(){
       customSounds: customSounds,
       snoozeMinutes: document.getElementById('snoozeMinutesInput') ? document.getElementById('snoozeMinutesInput').value : 9,
       cities: cities,
+      use24HourFormat: use24HourFormat,
     }));
   }catch(e){ /* storage unavailable or full — keep working in-memory only */ }
 }
@@ -3768,8 +3825,12 @@ refreshTimerStepperUI();
 
   if(Array.isArray(saved.cities) && saved.cities.length){
     cities = saved.cities;
-    renderCities();
   }
+  use24HourFormat = !!saved.use24HourFormat;
+  document.getElementById('militaryTimeToggle').checked = use24HourFormat;
+  updateLocalClock();
+  renderCities();
+  renderAlarms();
   applyAccentColor(saved.accentHex || DEFAULT_ACCENT);
   applyBgColor(saved.bgHex || DEFAULT_BG);
   if(currentBgDataUrl){
